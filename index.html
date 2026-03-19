@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --light-blue: #3b82f6;
+            --dark-blue: #1e40af;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .major-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            border-left: 4px solid var(--light-blue);
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            padding: 15px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+            transform: translateY(-3px);
+        }
+
+        .skill-name {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .skill-level {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .skill-level.proficient {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .skill-level.mastered {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .skill-level.learned {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .courses-list, .hobbies-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .course-tag, .hobby-tag {
+            padding: 8px 16px;
+            background: var(--bg-light);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .course-tag:hover, .hobby-tag:hover {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .experience-item, .project-item, .award-item {
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--light-blue);
+        }
+
+        .experience-item:last-child, .project-item:last-child, .award-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .item-date {
+            font-size: 13px;
+            color: var(--text-secondary);
+            background: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .item-role {
+            font-size: 14px;
+            color: var(--light-blue);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .item-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .tech-tag {
+            font-size: 12px;
+            padding: 3px 10px;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--light-blue);
+            border-radius: 10px;
+        }
+
+        .bio-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .footer-link-icon {
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 30px 20px;
+            }
+
+            .name {
+                font-size: 26px;
+            }
+
+            .avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .item-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="fade-in">
+            <div class="header-content">
+                <div class="avatar">👨‍🎓</div>
+                <h1 class="name">高雅霖</h1>
+                <span class="major-tag">计算机科学与技术</span>
+            </div>
+        </header>
+
+        <section class="section fade-in">
+            <h2 class="section-title">基本信息</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">学校</div>
+                    <div class="info-value">电子科技大学成都学院</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">学院</div>
+                    <div class="info-value">计算机学院</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">专业</div>
+                    <div class="info-value">软件工程</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">年级</div>
+                    <div class="info-value">2024级</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">专业技能</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-name">Python</div>
+                    <span class="skill-level proficient">熟练</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">Java</div>
+                    <span class="skill-level mastered">掌握</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">JavaScript</div>
+                    <span class="skill-level mastered">掌握</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">Vue.js</div>
+                    <span class="skill-level mastered">掌握</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">MySQL</div>
+                    <span class="skill-level mastered">掌握</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-name">机器学习</div>
+                    <span class="skill-level learned">了解</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">核心课程</h2>
+            <div class="courses-list">
+                <span class="course-tag">数据结构与算法</span>
+                <span class="course-tag">计算机网络</span>
+                <span class="course-tag">操作系统</span>
+                <span class="course-tag">数据库原理</span>
+                <span class="course-tag">软件工程</span>
+                <span class="course-tag">人工智能导论</span>
+                <span class="course-tag">计算机组成原理</span>
+                <span class="course-tag">编译原理</span>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">校园经历</h2>
+            <div class="experience-item">
+                <div class="item-header">
+                    <div class="item-title">计算机学院学生会</div>
+                    <span class="item-date">2022.09 - 至今</span>
+                </div>
+                <div class="item-role">技术部部长</div>
+                <div class="item-description">
+                    负责学院各类活动的技术支持，开发学生会官网，管理学院新媒体平台，组织开展多次技术培训活动。
+                </div>
+            </div>
+            <div class="experience-item">
+                <div class="item-header">
+                    <div class="item-title">ACM竞赛队</div>
+                    <span class="item-date">2023.03 - 至今</span>
+                </div>
+                <div class="item-role">核心队员</div>
+                <div class="item-description">
+                    参加ACM程序设计竞赛训练，每周进行算法训练和模拟比赛，不断提升编程能力和算法思维。
+                </div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">竞赛获奖</h2>
+            <div class="award-item">
+                <div class="item-header">
+                    <div class="item-title">全国大学生数学建模竞赛</div>
+                    <span class="item-date">2023.09</span>
+                </div>
+                <div class="item-role">国家级二等奖</div>
+            </div>
+            <div class="award-item">
+                <div class="item-header">
+                    <div class="item-title">ACM-ICPC区域赛</div>
+                    <span class="item-date">2023.11</span>
+                </div>
+                <div class="item-role">省级银奖</div>
+            </div>
+            <div class="award-item">
+                <div class="item-header">
+                    <div class="item-title">互联网+大学生创新创业大赛</div>
+                    <span class="item-date">2024.05</span>
+                </div>
+                <div class="item-role">省级金奖</div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">项目经历</h2>
+            <div class="project-item">
+                <div class="item-header">
+                    <div class="item-title">智能校园服务平台</div>
+                    <span class="item-date">2023.06 - 2023.09</span>
+                </div>
+                <div class="item-role">项目负责人 / 全栈开发</div>
+                <div class="item-description">
+                    开发了一个集课程查询、校园资讯、二手交易于一体的校园服务平台，累计用户达到5000+。
+                </div>
+                <div class="project-tech">
+                    <span class="tech-tag">Vue.js</span>
+                    <span class="tech-tag">Spring Boot</span>
+                    <span class="tech-tag">MySQL</span>
+                    <span class="tech-tag">Redis</span>
+                </div>
+            </div>
+            <div class="project-item">
+                <div class="item-header">
+                    <div class="item-title">基于机器学习的课程推荐系统</div>
+                    <span class="item-date">2024.01 - 2024.04</span>
+                </div>
+                <div class="item-role">算法开发</div>
+                <div class="item-description">
+                    使用协同过滤和内容推荐算法，开发了个性化课程推荐系统，帮助学生更好地进行选课决策。
+                </div>
+                <div class="project-tech">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">TensorFlow</span>
+                    <span class="tech-tag">Scikit-learn</span>
+                    <span class="tech-tag">FastAPI</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section fade-in">
+            <h2 class="section-title">个人简介</h2>
+            <p class="bio-text">
+                热爱编程，喜欢探索新技术，具有扎实的计算机基础知识和良好的编程习惯。善于团队协作，有较强的责任心和沟通能力。希望通过不断学习和实践，成为一名优秀的软件工程师。
+            </p>
+            <h2 class="section-title" style="margin-top: 30px;">兴趣爱好</h2>
+            <div class="hobbies-list">
+                <span class="hobby-tag">编程</span>
+                <span class="hobby-tag">阅读</span>
+                <span class="hobby-tag">羽毛球</span>
+                <span class="hobby-tag">摄影</span>
+                <span class="hobby-tag">电影</span>
+                <span class="hobby-tag">旅行</span>
+            </div>
+        </section>
+
+        <footer class="fade-in">
+            <div class="footer-content">
+                <a href="mailto:zhangsan@example.com" class="footer-link">
+                    <span class="footer-link-icon">📧</span>
+                    <span>zhangsan@example.com</span>
+                </a>
+                <a href="https://github.com/zhangsan" target="_blank" class="footer-link">
+                    <span class="footer-link-icon">💻</span>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+                observer.observe(section);
+            });
+
+            setTimeout(() => {
+                sections.forEach(section => {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                });
+            }, 100);
+        });
+
+        const skillItems = document.querySelectorAll('.skill-item');
+        skillItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05) translateY(-5px)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) translateY(-3px)';
+            });
+        });
+    </script>
+</body>
+</html>
